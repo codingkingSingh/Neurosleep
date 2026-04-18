@@ -15,7 +15,11 @@ print("Server is open....")
 
 Neurosleep_socket.listen()
 
+while True: 
+
 connection, client_address = Neurosleep_socket.accept()
 
 data = connection.recv(1024) 
 print(data.decode())
+
+connection.close()
