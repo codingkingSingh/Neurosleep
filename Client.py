@@ -1,12 +1,16 @@
 import socket
+ 
+LocalHost = '127.0.0.1' 
+Port = 8000         
+ 
+Client_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
 
-HOST = '127.0.0.1'
-PORT = 8000
+Client_socket.connect((LocalHost, Port))
 
-  with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as client_socket:
+message = "Test Message"
 
-    client_socket.connect((HOST, PORT))
-    print ("Connected to server at {HOST}:{PORT}")
+Client_socket.sendall(message.encode())
 
+print(message)
 
-
+Client_socket.close()
