@@ -1,6 +1,6 @@
 import socket
 import datetime as dt
-import cache
+import Cache
 
 Neurosleep_socket = socket.socket(socket.AF_INET,socket.SOCK_STREAM )
 
@@ -26,10 +26,10 @@ while True:
 
     # Storing incoming message into Cache.py
     Cache.Temp_Cache[client_address] = {
-        "Message": data.encode(),
-        "Timestamp': dt.datetime.now()
+        "Message": data.decode(),
+        "Timestamp": dt.datetime.now()
     }
 
-    print(cache.Temp_Cache) # for testing 
+    print(Cache.Temp_Cache) # for testing 
 
     connection.close()
