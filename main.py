@@ -15,7 +15,7 @@ def sleeping_thread():
         print("\n--- Wake up to clean cache ---")
         Cache_lock.acquire()
         try:
-            # ✅ Issue #9: Performance Metrics (Before)
+            #  Issue #9: Performance Metrics (Before)
             initial_size = len(Cache.Temp_Cache)
             
             time_now = dt.datetime.now()
@@ -31,13 +31,13 @@ def sleeping_thread():
                 print(f"{Client} - message deleted")
                 del Cache.Temp_Cache[Client]
 
-            # ✅ Issue #9: Performance Metrics (After)
+            # Issue #9: Performance Metrics (After)
             final_size = len(Cache.Temp_Cache)
             removed = initial_size - final_size
             print(f"Performance Metrics: Processed {initial_size} packets. Cleaned {removed} entries.")
             print(f"Memory Optimization: {final_size} active entries remaining.")
 
-            # ✅ REM Sleep (VIP sorting)
+            # REM Sleep (VIP sorting)
             priority_users = sorted(priority_counter, key=priority_counter.get, reverse=True)[:3]
             print("VIP Users:", priority_users)
 
@@ -45,4 +45,32 @@ def sleeping_thread():
             print("--- Going back to sleep ---\n")
             Cache_lock.release()
 
-# ... (Thread Start & Main Loop) ...
+Neurosleep_socket = socket.socket(socket.AF_INET,socket.SOCK_STREAM )
+LocalHost = '127.0.0.1'
+Port = 8000
+Neurosleep_socket.bind((LocalHost, Port))
+Neurosleep_socket.listen()
+print("Server open and listening")
+
+cleaner = threading.Thread(target = sleeping_thread)
+cleaner.daemon = True
+cleaner.start()
+
+while True:
+    connection, client_address = Neurosleep_socket.accept()
+    data = connection.recv(1024)
+
+    if data:
+        Cache_lock.acquire()
+        try:
+            ip = client_address
+            priority_counter[ip] = priority_counter.get(ip,0)+1
+
+            Cache.Temp_Cache[client_address]= {
+                "Message": data.decode(),
+                "Timestamp": dt.datetime.now()
+            }
+        finally: 
+            Cache_lock.release()
+
+        connection.close()
