@@ -79,3 +79,5 @@ while True:
         Cache_lock.release()
 
     connection.close()
+    #close connection
+    
