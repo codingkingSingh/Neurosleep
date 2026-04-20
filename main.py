@@ -64,13 +64,18 @@ while True:
 
     data = connection.recv(1024) 
     print(data.decode())
+    Cache_lock.acquire()
 
     # Storing incoming message into Cache.py
-    Cache.Temp_Cache[client_address] = {
-        "Message": data.decode(),
-        "Timestamp": dt.datetime.now()
-    }
+    try:
 
-    print(Cache.Temp_Cache) # for testing 
+        Cache.Temp_Cache[client_address] = {
+            "Message": data.decode(),
+            "Timestamp": dt.datetime.now()
+        }
+
+        print(Cache.Temp_Cache) # for testing 
+    finally:
+        Cache_lock.release()
 
     connection.close()
